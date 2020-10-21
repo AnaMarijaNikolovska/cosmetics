@@ -45,7 +45,7 @@ public class CosmeticsServiceImpl implements CosmeticsService {
             editproduct.setName(cosmetics.getName());
             editproduct.setId(cosmetics.getId());
             editproduct.setPicture(cosmetics.getPicture());
-            editproduct.setNumberOfAvalable(cosmetics.getNumberOfAvalable());
+            editproduct.setNumberOfAvailable(cosmetics.getNumberOfAvailable());
             editproduct.setPrice(cosmetics.getPrice());
 
             return cosmeticsRepository.save(editproduct);

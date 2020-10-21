@@ -23,4 +23,18 @@ public class Account {
 
     String password;
 
+    String email;
+
+    String country;
+
+    String city;
+
+    String streetName;
+
+    Integer streetNumber;
+
+    Integer zip;
+
+    Long phoneNumber;
+
 }

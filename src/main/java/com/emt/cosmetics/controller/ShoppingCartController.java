@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
+@CrossOrigin(origins = "http://localhost:3000")
 @RequestMapping("/api/cart")
 public class ShoppingCartController {
     private final ShoppingCartServiceImpl shoppingCartService;

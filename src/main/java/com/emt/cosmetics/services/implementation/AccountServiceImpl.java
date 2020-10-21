@@ -43,7 +43,13 @@ public class AccountServiceImpl implements AccountService {
                     account1.setPassword(account.getPassword());
                     account1.setUsername(account.getUsername());
                     account1.setSurname(account.getSurname());
-
+                    account1.setEmail(account.getEmail());
+                    account1.setCountry(account.getCountry());
+                    account1.setCity(account.getCity());
+                    account1.setPhoneNumber(account.getPhoneNumber());
+                    account1.setStreetName(account.getStreetName());
+                    account1.setStreetNumber(account.getStreetNumber());
+                    account1.setZip(account.getZip());
                     return accountRepository.save(account1);
                 }
 

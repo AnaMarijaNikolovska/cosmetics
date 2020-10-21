@@ -18,7 +18,7 @@ public class Cosmetics {
 
     String name;
 
-    Long numberOfAvalable;
+    Long numberOfAvailable;
 
     String description;
 
