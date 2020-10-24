@@ -1,14 +1,30 @@
 package com.emt.cosmetics.services;
 
+import com.emt.cosmetics.model.Account;
 import com.emt.cosmetics.model.Cosmetics;
+import com.emt.cosmetics.model.dto.CosmeticDto;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
 public interface CosmeticsService {
-    public List<Cosmetics> getAllCosmetics();
-    public Optional<Cosmetics> getOneCosmetics(Long id);
-    public Cosmetics saveCosmetics(Cosmetics cosmetics);
-    public Cosmetics editCosmetics(Cosmetics cosmetics, Long id);
-    public void deleteCosmetics(Long id);
+    List<Cosmetics> getAllCosmetics();
+
+    List<Cosmetics> getAllByCategory(Long categoryId);
+
+    List<Cosmetics> getAllByMainCategory(String mainCategory);
+
+    List<Cosmetics> getAllBySeller(String username);
+
+    Optional<Cosmetics> getOneCosmetics(Long id);
+
+    Optional<Cosmetics> getByShoppingCartsIn(String username);
+
+    Cosmetics saveCosmetics(CosmeticDto cosmeticDto, MultipartFile cosmeticPicture, Account account) throws IOException;
+
+    Cosmetics editCosmetics(CosmeticDto cosmeticDto, MultipartFile cosmeticPicture, Long id) throws IOException;
+
+    void deleteCosmetics(Long id);
 }

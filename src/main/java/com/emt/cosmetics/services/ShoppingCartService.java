@@ -6,9 +6,15 @@ import java.util.List;
 import java.util.Optional;
 
 public interface ShoppingCartService {
-    public List<ShoppingCart> getAllShoppingCarts();
-    public Optional<ShoppingCart>  getOneShoppingCart(Long id);
-    public ShoppingCart saveShoppingCart(ShoppingCart shoppingCart);
-    public ShoppingCart editShoppingCart(ShoppingCart shoppingCart, Long id);
-    public void deleteShoppingCart(Long id);
+    List<ShoppingCart> getAllShoppingCarts();
+
+    Optional<ShoppingCart> getOneShoppingCart(Long id);
+
+    ShoppingCart saveShoppingCart(ShoppingCart shoppingCart);
+
+    ShoppingCart getUserShoppingCart(String username);
+
+    ShoppingCart editShoppingCart(String username, Long cosmeticId);
+
+    void deleteShoppingCart(Long id);
 }

@@ -1,6 +1,8 @@
 package com.emt.cosmetics.services.implementation;
 
 import com.emt.cosmetics.model.Category;
+import com.emt.cosmetics.model.dto.CategoryDto;
+import com.emt.cosmetics.model.enums.MainCategory;
 import com.emt.cosmetics.repository.CategoryRepository;
 import com.emt.cosmetics.services.CategoryService;
 import org.springframework.stereotype.Service;
@@ -22,33 +24,46 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
+    public List<Category> getAllByMainCategory(String mainCategory) {
+        return categoryRepository.getAllByMainCategory(mainCategory);
+    }
+
+    @Override
     public Optional<Category> getOneCategory(Long id) {
         return categoryRepository.findById(id);
     }
 
     @Override
-    public Category saveCategory(Category category) {
+    public Category saveCategory(CategoryDto categoryDto) {
+        Category category = new Category();
+        mapDtoToEntity(category, categoryDto);
+
         return categoryRepository.save(category);
     }
 
     @Override
-    public Category editCategory(Category category, Long id) {
-        Optional<Category >editCategory = getOneCategory(id);
+    public Category editCategory(CategoryDto categoryDto, Long id) {
+        Optional<Category> optionalCategory = getOneCategory(id);
 
-        if (editCategory.isPresent()){
-            Category newCategory = editCategory.get();
-            newCategory.setDescription(category.getDescription());
-            newCategory.setId(category.getId());
-            newCategory.setName(category.getName());
+        if (optionalCategory.isPresent()) {
+            Category category = optionalCategory.get();
+            mapDtoToEntity(category, categoryDto);
 
-            return categoryRepository.save(newCategory);
+            return categoryRepository.save(category);
         }
         return null;
-
     }
 
     @Override
     public void deleteCategory(Long id) {
         categoryRepository.deleteById(id);
+    }
+
+    private void mapDtoToEntity(Category category, CategoryDto categoryDto) {
+        category.setName(categoryDto.getName());
+        category.setDescription(categoryDto.getDescription());
+
+        MainCategory mainCategory = MainCategory.valueOf(categoryDto.getMainCategory());
+        category.setMainCategory(mainCategory);
     }
 }

@@ -1,42 +1,65 @@
-import React, {useEffect, useState} from "react";
-import Button from "react-bootstrap/Button";
+import React, {useContext, useEffect, useState} from "react";
 import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
 import Form from "react-bootstrap/Form";
-import FormControl from "react-bootstrap/FormControl";
 import axios from "./AxiosConfig";
 import NavDropdown from "react-bootstrap/NavDropdown";
-import {Link} from "@reach/router";
+import {Link, navigate} from "@reach/router";
+import {Button} from "react-bootstrap";
+import {authContext} from "./AuthContext";
 
 
-export default function Header() {
+export default function Header(props) {
     const [categories, setCategories] = useState(null);
+    const {setAuthData} = useContext(authContext);
+
     useEffect(() => {
         axios.get("/category")
             .then(response => {
                 setCategories(response.data)
             })
     }, [])
+
+    const logout = () => {
+        setAuthData(null);
+        navigate("/").then(() => window.location.reload())
+    }
+
+
     return (
         <div>
             <Navbar
                 style={{background: "linear-gradient(90deg, rgba(51, 255, 192, 1) 0%, rgba(51, 255, 250, 1) 50%, rgba(107, 255, 200, 1) 100%"}}>
-                <Navbar.Brand href="#home">Navbar</Navbar.Brand>
+                <Link to={"/"} className={"navbar-brand"}>Glowy Angels</Link>
                 <Nav className="mr-auto">
-                    <Nav.Link href="#home">Home</Nav.Link>
-                    <Nav.Link href="#features">Features</Nav.Link>
-                    <Nav.Link href="#pricing">Pricing</Nav.Link>
-                    <NavDropdown title="Dropdown" id="collasible-nav-dropdown">
+                    <NavDropdown title="Categories" id="collasible-nav-dropdown">
                         {categories != null && categories.length > 0 && categories.map(category =>
-                            <NavDropdown.Item key={category.id}> {category.name} </NavDropdown.Item>)}
+                            <Link key={category.id} className={"dropdown-item"}
+                                  to={`/category/${category.id}`}>{category.name} </Link>
+                        )}
                         <NavDropdown.Divider/>
-                        <Link to={"/category/add"}> Add Category</Link>
+                        <Link to={"/category/add"} className={"dropdown-item"}> Add Category</Link>
                     </NavDropdown>
                 </Nav>
-                <Form inline>
-                    <FormControl type="text" placeholder="Search" className="mr-sm-2"/>
-                    <Button variant="outline-info">Search</Button>
-                </Form>
+                <Nav>
+                    {props.loggedUser
+                        ? <>
+                            <NavDropdown alignRight title={props.loggedUser && props.loggedUser.username?.toUpperCase()}
+                                         id="collasible-nav-dropdown">
+                                <Link to={`/user/${props.loggedUser.username}`} className={"nav-link"}>Profile</Link>
+                                <Link to={`/shopping-cart`} className={"nav-link"}>Shopping
+                                    Cart
+                                </Link>
+                            </NavDropdown>
+                            <Button variant={"link"} onClick={logout} className={"nav-link"}>
+                                LOGOUT
+                            </Button>
+                        </>
+                        : <>
+                            <Link to={"/login"} className={"nav-link"}>Login</Link>
+                            <Link to={"/register"} className={"nav-link"}>Register</Link>
+                        </>}
+                </Nav>
             </Navbar>
         </div>
     )

@@ -1,9 +1,16 @@
-import React, {useState} from "react";
+import React, {useContext, useState} from "react";
 import Form from "react-bootstrap/Form";
 import Col from "react-bootstrap/Col";
 import Button from "react-bootstrap/Button";
+import axios from "../../components/AxiosConfig";
+import {authContext} from "../../components/AuthContext";
+import {navigate} from "@reach/router";
+import {useToasts} from "react-toast-notifications";
+import {Jumbotron} from "react-bootstrap";
 
 export default function Register() {
+    const {setAuthData} = useContext(authContext);
+    const {addToast} = useToasts();
     const [account, setAccount] = useState({
         name: "",
         surname: "",
@@ -16,18 +23,41 @@ export default function Register() {
         streetName: "",
         streetNumber: "",
         zip: ""
-    })
+    });
+
+    const [accountPicture, setAccountPicture] = useState(null);
 
     const handleChange = name => event => {
         setAccount({...account, [name]: event.target.value});
     };
 
+    const handleDrop = event => {
+        let file = event.target.files[0];
+        setAccountPicture(file);
+    }
+
+    const BasicAuthToken = (username, password) => {
+        return 'Basic ' + window.btoa(username + ":" + password);
+    }
+
     const handleSubmit = event => {
         event.preventDefault();
+        const formData = new FormData();
+        formData.append("accountDto", new Blob([JSON.stringify({...account})], {
+            type: "application/json"
+        }));
+        formData.append("accountPicture", accountPicture);
+        axios.post("user", formData)
+            .then(res => {
+                setAuthData(BasicAuthToken(res.data.username, res.data.password));
+                navigate(`/user/${res.data.username}`).then(() =>
+                    addToast("Account created", {appearance: "success", autoDismiss: true})
+                );
+            })
     }
 
     return (
-        <div>
+        <Jumbotron>
             <Form onSubmit={handleSubmit}>
                 <Form.Row>
                     <Form.Group as={Col}>
@@ -38,8 +68,8 @@ export default function Register() {
 
                     <Form.Group as={Col} controlId="formGridPassword">
                         <Form.Label>Password</Form.Label>
-                        <Form.Control type="password" placeholder="Password" value={account.username}
-                                      onChange={handleChange("username")}/>
+                        <Form.Control type="password" placeholder="Password" value={account.password}
+                                      onChange={handleChange("password")}/>
                     </Form.Group>
                 </Form.Row>
 
@@ -81,13 +111,13 @@ export default function Register() {
 
                     <Form.Group as={Col}>
                         <Form.Label>Zip</Form.Label>
-                        <Form.Control placeholder="Enter Zip Code" value={account.zip} onChange={handleChange("zip")}/>
+                        <Form.Control type="number" placeholder="Enter Zip Code" value={account.zip}
+                                      onChange={handleChange("zip")}/>
                     </Form.Group>
 
                 </Form.Row>
 
                 <Form.Row>
-
                     <Form.Group as={Col}>
                         <Form.Label>Street Name</Form.Label>
                         <Form.Control placeholder="Enter Street Name" value={account.streetName}
@@ -96,16 +126,20 @@ export default function Register() {
 
                     <Form.Group as={Col}>
                         <Form.Label>Street Number</Form.Label>
-                        <Form.Control placeholder="Enter Street Number" value={account.streetName}
+                        <Form.Control type="number" placeholder="Enter Street Number" value={account.streetNumber}
                                       onChange={handleChange("streetNumber")}/>
                     </Form.Group>
-
                 </Form.Row>
+
+                <Form.Group>
+                    <Form.Label>Picture</Form.Label>
+                    <Form.File onChange={handleDrop}/>
+                </Form.Group>
 
                 <Button variant="primary" type="submit">
                     Submit
                 </Button>
             </Form>
-        </div>
+        </Jumbotron>
     )
 }

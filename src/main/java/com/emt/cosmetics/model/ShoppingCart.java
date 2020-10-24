@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 @Entity
@@ -17,10 +18,23 @@ public class ShoppingCart {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
 
-
-    @OneToOne
-    Account usesrname;
+    @OneToOne(cascade = CascadeType.ALL)
+    Account owner;
 
     @ManyToMany
     Set<Cosmetics> cosmetics;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof ShoppingCart)) return false;
+        ShoppingCart that = (ShoppingCart) o;
+        return getId().equals(that.getId()) &&
+                getOwner().equals(that.getOwner());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getId(), getOwner());
+    }
 }

@@ -1,19 +1,26 @@
 package com.emt.cosmetics.services.implementation;
 
+import com.emt.cosmetics.model.Cosmetics;
 import com.emt.cosmetics.model.ShoppingCart;
 import com.emt.cosmetics.repository.ShoppingCartRepository;
+import com.emt.cosmetics.services.CosmeticsService;
 import com.emt.cosmetics.services.ShoppingCartService;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Service
 public class ShoppingCartServiceImpl implements ShoppingCartService {
     private final ShoppingCartRepository shoppingCartRepository;
+    private final CosmeticsService cosmeticsService;
 
-    public ShoppingCartServiceImpl(ShoppingCartRepository shoppingCartRepository) {
+    public ShoppingCartServiceImpl(ShoppingCartRepository shoppingCartRepository, CosmeticsService cosmeticsService) {
         this.shoppingCartRepository = shoppingCartRepository;
+        this.cosmeticsService = cosmeticsService;
     }
 
     @Override
@@ -32,23 +39,29 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
     }
 
     @Override
-    public ShoppingCart editShoppingCart(ShoppingCart shoppingCart, Long id) {
-        Optional<ShoppingCart> editCart = getOneShoppingCart(id);
-        if (editCart.isPresent()){
-            ShoppingCart cart = editCart.get();
-            cart.setId(shoppingCart.getId());
-            cart.setUsesrname(shoppingCart.getUsesrname());
-            cart.setCosmetics(shoppingCart.getCosmetics());
+    public ShoppingCart getUserShoppingCart(String username) {
+        return shoppingCartRepository.getByOwnerUsername(username);
+    }
 
-            return shoppingCartRepository.save(cart);
+    @Override
+    public ShoppingCart editShoppingCart(String username, Long cosmeticId) {
+        ShoppingCart shoppingCart = getUserShoppingCart(username);
+
+        Cosmetics cosmetics = cosmeticsService.getOneCosmetics(cosmeticId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+        Set<Cosmetics> shoppingCartCosmetics = shoppingCart.getCosmetics();
+
+        if (shoppingCartCosmetics.contains(cosmetics)) {
+            shoppingCartCosmetics.remove(cosmetics);
+        } else {
+            shoppingCartCosmetics.add(cosmetics);
         }
-        return null;
 
+        shoppingCart.setCosmetics(shoppingCartCosmetics);
+        return shoppingCartRepository.save(shoppingCart);
     }
 
     @Override
     public void deleteShoppingCart(Long id) {
         shoppingCartRepository.deleteById(id);
-
     }
 }

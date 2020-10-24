@@ -1,11 +1,11 @@
 import axios from 'axios';
 
-const userToken = JSON.parse(sessionStorage.getItem('user'));
+const accountToken = JSON.parse(sessionStorage.getItem('accountToken'));
 
 const instance = axios.create({
     baseURL: 'http://localhost:8080/api',
     headers: {
-        Authorization: userToken,
+        Authorization: accountToken,
     }
 });
 
