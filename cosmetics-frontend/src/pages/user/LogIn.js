@@ -35,29 +35,33 @@ export default function LogIn() {
                             autoDismiss: true,
                             placement: "bottom-right"
                         })
+                        setInterval(()=> window.location.reload(), 2000);
                     })
             })
     }
 
     return (
-        <Jumbotron>
-            <Form onSubmit={handleSubmit}>
-                <Form.Group>
-                    <Form.Label>Username</Form.Label>
-                    <Form.Control placeholder="Enter username" value={account.username}
-                                  onChange={handleChange("username")}/>
-                </Form.Group>
+        <>
+            <h1 className={"mb-3"}>Login</h1>
+            <Jumbotron style={{backgroundColor: "#ff70cd"}}>
+                <Form onSubmit={handleSubmit}>
+                    <Form.Group>
+                        <Form.Label>Username</Form.Label>
+                        <Form.Control placeholder="Enter username" value={account.username}
+                                      onChange={handleChange("username")}/>
+                    </Form.Group>
 
-                <Form.Group>
-                    <Form.Label>Password</Form.Label>
-                    <Form.Control type="password" placeholder="Password" value={account.password}
-                                  onChange={handleChange("password")}/>
-                </Form.Group>
+                    <Form.Group>
+                        <Form.Label>Password</Form.Label>
+                        <Form.Control type="password" placeholder="Password" value={account.password}
+                                      onChange={handleChange("password")}/>
+                    </Form.Group>
 
-                <Button variant="primary" type="submit">
-                    Submit
-                </Button>
-            </Form>
-        </Jumbotron>
+                    <Button variant="primary" type="submit">
+                        Submit
+                    </Button>
+                </Form>
+            </Jumbotron>
+        </>
     )
 }

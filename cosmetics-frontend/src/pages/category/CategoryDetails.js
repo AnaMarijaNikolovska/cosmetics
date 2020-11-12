@@ -43,9 +43,12 @@ export default function CategoryDetails(props) {
                             </div>)}
                     </div>
 
-                    <Button className={"mr-3"} onClick={() => setShowEditModal(true)}> Edit Category </Button>
-                    <Button variant={"success"} onClick={() => navigate("/cosmetics/add")}> Add Cosmetic </Button>
-
+                    {props.loggedUser &&
+                    <>
+                        <Button className={"mr-3"} onClick={() => setShowEditModal(true)}> Edit Category </Button>
+                        <Button variant={"success"} onClick={() => navigate("/cosmetics/add")}> Add Cosmetic </Button>
+                    </>
+                    }
                     {showEditModal === true &&
                     <EditCategory show={showEditModal} setShow={setShowEditModal} category={category}/>}
                 </Card.Body>

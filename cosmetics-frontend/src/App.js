@@ -38,7 +38,7 @@ function App() {
                     <LogIn path={"/login"}/>
                     <Register path={"/register"}/>
                     <UserDetails path={"user/:username"}/>
-                    <CategoryDetails path={"/category/:categoryId"}/>
+                    <CategoryDetails loggedUser={loggedUser} path={"/category/:categoryId"}/>
                     <MainCategoryDetails path={"/main-category/:mainCategory"}/>
                     <ProtectedRoute component={AddCategory} path={"/category/add"}/>
                     <ProtectedRoute component={AddItems} path={"/cosmetics/add"}/>
